@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Birthday Surprise</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #f5f5dc;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .heart {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background-color: red;
+      transform: rotate(-45deg);
+      z-index: 1;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background-color: red;
+      border-radius: 50%;
+    }
+
+    .heart::before { top: -11px; left: 0; }
+    .heart::after { left: 10px; top: 0; }
+
+    @keyframes throb {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+
+    .throb-arrow {
+      animation: throb 1s infinite;
+      opacity: 0.8;
+      display: block;
+    }
+    .present-img {
+      animation: throb 1s infinite;
+      opacity: 1;
+      display: block;
+    }
+
+    .center-box {
+      position: relative;
+      top: 0;
+      width: 540px;
+      min-height: 350px;
+      background: rgba(255, 182, 193, 0.25);
+      border-radius: 0 40px 0 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      z-index: 2;
+      border: 2px solid rgba(200,200,200,0.35);
+      pointer-events: auto;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 30px 20px;
+      box-sizing: border-box;
+      text-align: center;
+      margin-top: 70px;
+    }
+
+    .gif-circle {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: white;
+      border: 6px solid #ff4d4d;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      z-index: 3;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .gif-slide {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .typing-message {
+  font-size: 32px;
+  text-align: center;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  background: linear-gradient(90deg, #8e44ad, #3498db, #1abc9c, #8e44ad);
+  background-size: 400% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+    #greetingNote {
+      font-size: 28px;
+      color: #c0392b;
+      font-weight: 700;
+      position: absolute;
+      top: 300px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      z-index: 4;
+    }
+
+    .small-heart {
+  width: 30px;
+  height: 30px;
+  background-color:  rgba(158, 46, 149, 1) ;
+  transform: rotate(-45deg);
+  margin-bottom: 60px ;
+  position: absolute;
+  left: 40px;
+  bottom: 20px;
+  cursor: pointer;
+}
+
+.small-heart::before,
+.small-heart::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color:  rgba(158, 46, 149, 1) ;
+  border-radius: 50%;
+  
+}
+
+.small-heart::before { top: -15px; left: 0; }
+.small-heart::after { top: 0; left: 15px; }
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 40px; 
+  border-radius: 40px; 
+  border: 4px solid #ccc;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.25);
+  text-align: center;
+  z-index: 999;
+  display: none;
+  font-size: 28px; 
+}
+
+.popup button {
+  margin: 20px;
+  padding: 16px 32px; 
+  border-radius: 20px; 
+  background-color: lightblue;
+  border: none;
+  font-size: 20px; 
+  cursor: pointer;
+}
+
+    #finalButton {
+      margin-top: 30px;
+      padding: 10px 25px;
+      background-color: #3498db;
+      border: 2px solid pink;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .secondary-msg {
+      font-size: 22px;
+      margin-top: 30px;
+      color: red;
+      white-space: pre-line;
+    }
+    .typing-message.small {
+      font-size: 22px;
+    }
+    .gif-circle-final {
+    width: 160px;
+    height: 160px;
+    margin: 20px auto 0;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #ff4d4d;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+
+    .gif-inside {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    }
+
+
+  </style>
+</head>
+<body>
+
+  
+  <div class="gif-circle" id="gifCircle">
+    <img src="cute-icegif-4.gif" class="gif-slide" />
+    <img src="cute-icegif-5.gif" class="gif-slide" />
+    <img src="cute-icegif-13.gif" class="gif-slide" />
+    <img src="icegif-382.gif" class="gif-slide" />
+    <img src="icegif-807.gif" class="gif-slide" />
+  </div>
+
+  
+  <div id="greetingNote" style="margin-bottom: 40px;"></div>
+
+  
+  <div class="center-box" id="centerBox">
+    <div class="note" style="margin-top: 20px; font-size: 32px; font-family: cursive; color:#c0392b">Click here for a surprise!</div>
+    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 30px;">
+      <svg class="throb-arrow" width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 6V38" stroke="#c0392b" stroke-width="4" stroke-linecap="round"/>
+        <path d="M12 28L22 38L32 28" stroke="#c0392b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <img src="present-removebg-preview.png" class="present-img" onclick="openBox()" style="cursor:pointer; width: 108px; height: 108px; padding-top: 30px;" />
+    </div>
+  </div>
+
+  
+  <div class="popup" id="popup">
+    <div id="popupContent"></div>
+  </div>
+
+  <script>
+    let userName = "";
+    let currentGifIndex = 0;
+    let gifInterval;
+    let moveCount = 0;
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.top = '0';
+      heart.style.position = 'fixed';
+      heart.style.animation = 'drop 3s linear forwards, pump 1s ease-in-out infinite';
+      document.body.appendChild(heart);
+      setTimeout(() => { heart.remove(); }, 3000);
+    }
+
+    setInterval(createHeart, 80);
+    const style = document.createElement('style');
+    style.innerHTML = `@keyframes drop {
+    0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0.5) rotate(-45deg);
+    }
+    10% {
+        opacity: 1;
+    }
+    500% {
+        transform:scale(1.5) rotate(-45deg);
+        opacity: 0.5;
+    }   
+    100% {
+        transform: translateY(-10vh) scale(2.5) rotate(-45deg);
+        opacity: 0;
+    }
+    }`;
+
+    document.head.appendChild(style);
+
+    function openBox() {
+  document.getElementById('gifCircle').style.display = 'flex';
+  startGifSlideshow();
+  document.getElementById('centerBox').innerHTML = `
+    <h2 style="color: red;">Enter your name</h2>
+    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+      <input id="nameInput" placeholder="Your name..." style="padding:10px; margin-bottom:15px; width: 80%; max-width: 250px; border: 1px solid #ccc; border-radius: 5px;" />
+      <button onclick="submitName()" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer;">
+        Submit
+      </button>
+    </div>
+  `;
+}
+
+    function submitName() {
+      const input = document.getElementById('nameInput');
+      userName = input.value.trim();
+      if (userName === "") return alert("Enter a name");
+      document.getElementById('greetingNote').textContent = "Hi, " + userName + "!";
+      document.getElementById('greetingNote').style.display = 'block';
+
+      document.getElementById('centerBox').innerHTML = `
+        <h2 class="typing-message" id="typingMessage"></h2>
+        <div class="secondary-msg" id="secondaryMessage"></div>
+        <button id="finalButton" onclick="startHeartStage()">Aage Badhe</button>
+      `;
+      typeMessage("🎉 Happy Birthday, " + userName + "!", 'typingMessage', () => {
+        typeMessage("aaj kisika bday hai aur usko janamdin ki\nbohot sari subkamnaye", 'secondaryMessage');
+      });
+    }
+
+    function typeMessage(text, targetId, callback) {
+      const target = document.getElementById(targetId);
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          target.textContent += text.charAt(i++);
+        } else {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, 60);
+    }
+
+    function startGifSlideshow() {
+      const gifs = document.querySelectorAll('.gif-slide');
+      gifs.forEach(gif => gif.style.display = 'none');
+      gifs[0].style.display = 'block';
+      gifInterval = setInterval(() => {
+        gifs[currentGifIndex].style.display = 'none';
+        currentGifIndex = (currentGifIndex + 1) % gifs.length;
+        gifs[currentGifIndex].style.display = 'block';
+      }, 1500);
+    }
+
+    function startHeartStage() {
+        document.getElementById('centerBox').innerHTML = `
+        <h2 class="typing-message" id="typingMessage2" style="font-size: 22px; white-space: pre-line;"></h2>
+        <div style="width: 100%; display: flex; justify-content: flex-start; padding-left: -50px; padding-top: 30px; margin-top: 40px;">
+        <div class="small-heart" id="hoverHeart" onmouseover="moveHeart()" onclick="showPopup()"></div>
+        </div>
+        `;
+        typeMessage("Click on the heart\nto make your day a superb one", 'typingMessage2');
+
+    }
+
+    function moveHeart() {
+    if (moveCount < 5) {
+    const heart = document.getElementById('hoverHeart');
+    heart.style.transform = `translateX(${(moveCount + 1) * 80}px) rotate(-45deg)`;
+    moveCount++;
+    }
+    }
+
+    function showPopup() {
+      const popup = document.getElementById('popup');
+      const content = `
+        <h3>Gift chahiye?</h3>
+        <button onclick="showPartyDemand()">Dedo 😊</button>
+        <button onclick="showPartyDemand()">Hn jarurr</button>
+      `;
+      document.getElementById('popupContent').innerHTML = content;
+      popup.style.display = 'block';
+    }
+
+    function showPartyDemand() {
+      document.getElementById('popupContent').innerHTML = `
+        <h2 style="color:black; font-size: 36px;">Pehle party do!!</h2>
+        <button onclick="finalMessage()">Thik hai</button>
+      `;
+    }
+
+    function finalMessage() {
+  document.getElementById('popup').style.display = 'none';
+  document.getElementById('centerBox').innerHTML = `
+    <h2 class="typing-message" id="typingMessageFinal"></h2>
+    <div class="secondary-msg" id="finalWish"></div>
+    <div class="gif-circle-final">
+      <img src="cute-icegif-8.gif" alt="Celebration" class="gif-inside" />
+    </div>
+  `;
+
+  typeMessage("🎉 Happy Birthday, " + userName + "!", 'typingMessageFinal', () => {
+    typeMessage(
+      "Wish you a bestest birthday ever,\nhamesha khush raho, and enjoy your day\nto the fullest, love you ❤️",
+      'finalWish'
+    );
+  });
+}
+
+  </script>
+</body>
+</html>
